@@ -3,10 +3,10 @@ from typing import Optional
 
 from dotenv import load_dotenv
 from jsonargparse import CLI
-
-from . import LLMNeedleHaystackTester, LLMMultiNeedleHaystackTester
-from .evaluators import Evaluator, LangSmithEvaluator, OpenAIEvaluator
-from .providers import Anthropic, ModelProvider, OpenAI, Cohere
+from llm_needle_haystack_tester import LLMNeedleHaystackTester
+from llm_multi_needle_haystack_tester import LLMMultiNeedleHaystackTester
+from evaluators import Evaluator, LangSmithEvaluator, OpenAIEvaluator
+from providers import Anthropic, ModelProvider, OpenAI, Cohere, HF 
 
 load_dotenv()
 
@@ -20,13 +20,13 @@ class CommandArgs():
     haystack_dir: Optional[str] = "PaulGrahamEssays"
     retrieval_question: Optional[str] = "What is the best thing to do in San Francisco?"
     results_version: Optional[int] = 1
-    context_lengths_min: Optional[int] = 1000
-    context_lengths_max: Optional[int] = 16000
-    context_lengths_num_intervals: Optional[int] = 35
+    context_lengths_min: Optional[int] = 200
+    context_lengths_max: Optional[int] = 4000
+    context_lengths_num_intervals: Optional[int] = 5
     context_lengths: Optional[list[int]] = None
     document_depth_percent_min: Optional[int] = 0
     document_depth_percent_max: Optional[int] = 100
-    document_depth_percent_intervals: Optional[int] = 35
+    document_depth_percent_intervals: Optional[int] = 5
     document_depth_percents: Optional[list[int]] = None
     document_depth_percent_interval_type: Optional[str] = "linear"
     num_concurrent_requests: Optional[int] = 1
@@ -65,6 +65,8 @@ def get_model_to_test(args: CommandArgs) -> ModelProvider:
             return Anthropic(model_name=args.model_name)
         case "cohere":
             return Cohere(model_name=args.model_name)
+        case "hf":
+            return HF()
         case _:
             raise ValueError(f"Invalid provider: {args.provider}")
 

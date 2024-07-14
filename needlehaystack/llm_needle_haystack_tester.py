@@ -6,8 +6,8 @@ import time
 
 import numpy as np
 
-from .evaluators import Evaluator
-from .providers import ModelProvider
+from evaluators import Evaluator
+from providers import ModelProvider
 
 from asyncio import Semaphore
 from datetime import datetime, timezone
@@ -128,7 +128,9 @@ class LLMNeedleHaystackTester:
         # Run through each iteration of context_lengths and depths
         tasks = []
         for context_length in self.context_lengths:
+            print('context length: ', context_length)
             for depth_percent in self.document_depth_percents:
+                print('depth: ', depth_percent)
                 task = self.bound_evaluate_and_log(sem, context_length, depth_percent)
                 tasks.append(task)
 
@@ -138,9 +140,9 @@ class LLMNeedleHaystackTester:
     async def evaluate_and_log(self, context_length, depth_percent):
         # Checks to see if you've already checked a length/percent/version.
         # This helps if the program stop running and you want to restart later
-        if self.save_results:
-            if self.result_exists(context_length, depth_percent):
-                return
+        # if self.save_results:
+        #     if self.result_exists(context_length, depth_percent):
+        #         return
 
         # Go generate the required length context and place your needle statement in
         context = await self.generate_context(context_length, depth_percent)

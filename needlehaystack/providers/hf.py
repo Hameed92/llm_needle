@@ -24,7 +24,7 @@ class HF(ModelProvider):
     DEFAULT_MODEL_KWARGS: dict = dict(max_tokens  = 300,
                                       temperature = 0)
 
-    def __init__(self, model_path,
+    def __init__(self,
                  model_name: str = "gpt-3.5-turbo-0125",
                  model_kwargs: dict = DEFAULT_MODEL_KWARGS):
         """
@@ -37,12 +37,12 @@ class HF(ModelProvider):
         Raises:
             ValueError: If NIAH_MODEL_API_KEY is not found in the environment.
         """
-        api_key = os.getenv('NIAH_MODEL_API_KEY')
-        if (not api_key):
-            raise ValueError("NIAH_MODEL_API_KEY must be in env.")
+        # api_key = os.getenv('NIAH_MODEL_API_KEY')
+        # if (not api_key):
+        #     raise ValueError("NIAH_MODEL_API_KEY must be in env.")
 
         self.model_name = model_name
-        self.model_path = model_path
+        self.model_path = '/tmp/allam_13b_v1_12_2_8'
         self.model_kwargs = model_kwargs
         self.model = AutoModelForCausalLM.from_pretrained(self.model_path, device_map='auto')
         self.tokenizer = AutoTokenizer.from_pretrained(self.model_path)
@@ -62,10 +62,11 @@ class HF(ModelProvider):
         #         messages=prompt,
         #         **self.model_kwargs
         #     )
-        model_inputs = self.tokenizer.apply_chat_template(
-        response = self.model.generate(model_inputs)
+        model_inputs = self.tokenizer.apply_chat_template(prompt, return_tensors='pt').to('cuda')
+        generated_ids = self.model.generate(model_inputs, max_new_tokens=4000)
+        response = self.tokenizer.batch_decode(generated_ids[:, model_inputs.size()[1]:])[-1]
 
-        return #response.choices[0].message.content
+        return response #response.choices[0].message.content
     
     def generate_prompt(self, context: str, retrieval_question: str) -> str | list[dict[str, str]]:
         """
@@ -84,11 +85,7 @@ class HF(ModelProvider):
             },
             {
                 "role": "user",
-                "content": context
-            },
-            {
-                "role": "user",
-                "content": f"{retrieval_question} Don't give information outside the document or repeat your findings"
+                "content": f"{context} \n{retrieval_question} Don't give information outside the document or repeat your findings"
             }]
     
     def encode_text_to_tokens(self, text: str) -> list[int]:
