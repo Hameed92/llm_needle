@@ -37,9 +37,9 @@ class OpenAIEvaluator(Evaluator):
         self.true_answer = true_answer
         self.question_asked = question_asked
 
-        api_key = os.getenv('NIAH_EVALUATOR_API_KEY')
-        if (not api_key):
-            raise ValueError("NIAH_EVALUATOR_API_KEY must be in env for using openai evaluator.")
+        # api_key = os.getenv('NIAH_EVALUATOR_API_KEY')
+        # if (not api_key):
+        #     raise ValueError("NIAH_EVALUATOR_API_KEY must be in env for using openai evaluator.")
 
         # self.api_key = api_key
         # self.evaluator = ChatAnthropic(temperature=0, model="claude-3-5-sonnet-20240620")
