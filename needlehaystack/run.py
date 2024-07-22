@@ -66,7 +66,7 @@ def get_model_to_test(args: CommandArgs) -> ModelProvider:
         case "cohere":
             return Cohere(model_name=args.model_name)
         case "hf":
-            return HF(model_name=args.model_name)
+            return HF(model_path=args.model_name)
         case _:
             raise ValueError(f"Invalid provider: {args.provider}")
 
