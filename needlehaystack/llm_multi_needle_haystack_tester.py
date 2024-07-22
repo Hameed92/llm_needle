@@ -230,7 +230,7 @@ class LLMMultiNeedleHaystackTester(LLMNeedleHaystackTester):
 
                 # Save the result to file for retesting
                 with open(f'results/{context_file_location}_results.json', 'w', encoding='utf-8') as f:
-                    json.dump(results, f)
+                    json.dump(results, f, ensure_ascii=False)
 
             if self.seconds_to_sleep_between_completions:
                 await asyncio.sleep(self.seconds_to_sleep_between_completions)
