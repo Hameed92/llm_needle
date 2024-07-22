@@ -6,6 +6,7 @@ from langchain.evaluation import load_evaluator
 from langchain_community.chat_models import ChatOpenAI
 from langchain_anthropic import ChatAnthropic
 import requests
+import time
 
 class OpenAIEvaluator(Evaluator):
     DEFAULT_MODEL_KWARGS: dict = dict(temperature=0)
@@ -61,6 +62,7 @@ class OpenAIEvaluator(Evaluator):
         try:
             verdict = requests.post(url=url, headers=headers, json=payload).json()['choices'][0]['message']['content']
         except:
+            time.sleep(5)
             print('gpt call failed', verdict.text)
         
         try:
