@@ -193,7 +193,7 @@ class LLMNeedleHaystackTester:
             if not os.path.exists('contexts'):
                 os.makedirs('contexts')
 
-            with open(f'contexts/{context_file_location}_context.txt', 'w', encoding='utf-8', ensure_ascii=False) as f:
+            with open(f'contexts/{context_file_location}_context.txt', 'w', encoding='utf-8') as f:
                 f.write(context)
             
         if self.save_results:
@@ -202,7 +202,7 @@ class LLMNeedleHaystackTester:
                 os.makedirs('results')
 
             # Save the result to file for retesting
-            with open(f'results/{context_file_location}_results.json', 'w', encoding='utf-8', ensure_ascii=False) as f:
+            with open(f'results/{context_file_location}_results.json', 'w', encoding='utf-8') as f:
                 json.dump(results, f)
 
         if self.seconds_to_sleep_between_completions:
