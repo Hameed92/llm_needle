@@ -58,7 +58,10 @@ class OpenAIEvaluator(Evaluator):
         openai_url = os.environ.get("OPENAI_URL", None)
         headers = {'api-key': openai_key, 'Content-Type': 'application/json'}
         url = openai_url
-        verdict = requests.post(url=url, headers=headers, json=payload).json()['choices'][0]['message']['content']
+        try:
+            verdict = requests.post(url=url, headers=headers, json=payload).json()['choices'][0]['message']['content']
+        except:
+            print('gpt call failed', verdict.text)
         
         try:
             score = int(re.findall(r"\[\s*\+?(-?\d+)\s*\]", verdict)[0])
