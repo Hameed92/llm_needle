@@ -25,7 +25,7 @@ class HF(ModelProvider):
                                       temperature = 0)
 
     def __init__(self,
-                 model_name: str = "gpt-3.5-turbo-0125",
+                 model_path: str = "gpt-3.5-turbo-0125",
                  model_kwargs: dict = DEFAULT_MODEL_KWARGS):
         """
         Initializes the OpenAI model provider with a specific model.
@@ -41,8 +41,8 @@ class HF(ModelProvider):
         # if (not api_key):
         #     raise ValueError("NIAH_MODEL_API_KEY must be in env.")
 
-        self.model_name = model_name
-        self.model_path = '/tmp/allam_13b_v1_12_2_8'
+        self.model_name = model_path
+        self.model_path = model_path
         self.model_kwargs = model_kwargs
         self.model = AutoModelForCausalLM.from_pretrained(self.model_path, device_map='auto')
         self.tokenizer = AutoTokenizer.from_pretrained(self.model_path)
