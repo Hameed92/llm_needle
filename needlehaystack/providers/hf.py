@@ -3,7 +3,7 @@ from operator import itemgetter
 from typing import Optional
 
 from openai import AsyncOpenAI
-from langchain_openai import ChatOpenAI  
+# from langchain_openai import ChatOpenAI  
 from langchain.prompts import PromptTemplate
 import tiktoken
 from transformers import AutoModelForCausalLM, AutoTokenizer
@@ -113,45 +113,45 @@ class HF(ModelProvider):
         """
         return self.tokenizer.decode(tokens[:context_length])
     
-    def get_langchain_runnable(self, context: str) -> str:
-        """
-        Creates a LangChain runnable that constructs a prompt based on a given context and a question, 
-        queries the OpenAI model, and returns the model's response. This method leverages the LangChain 
-        library to build a sequence of operations: extracting input variables, generating a prompt, 
-        querying the model, and processing the response.
+    # def get_langchain_runnable(self, context: str) -> str:
+    #     """
+    #     Creates a LangChain runnable that constructs a prompt based on a given context and a question, 
+    #     queries the OpenAI model, and returns the model's response. This method leverages the LangChain 
+    #     library to build a sequence of operations: extracting input variables, generating a prompt, 
+    #     querying the model, and processing the response.
 
-        Args:
-            context (str): The context or background information relevant to the user's question. 
-            This context is provided to the model to aid in generating relevant and accurate responses.
+    #     Args:
+    #         context (str): The context or background information relevant to the user's question. 
+    #         This context is provided to the model to aid in generating relevant and accurate responses.
 
-        Returns:
-            str: A LangChain runnable object that can be executed to obtain the model's response to a 
-            dynamically provided question. The runnable encapsulates the entire process from prompt 
-            generation to response retrieval.
+    #     Returns:
+    #         str: A LangChain runnable object that can be executed to obtain the model's response to a 
+    #         dynamically provided question. The runnable encapsulates the entire process from prompt 
+    #         generation to response retrieval.
 
-        Example:
-            To use the runnable:
-                - Define the context and question.
-                - Execute the runnable with these parameters to get the model's response.
-        """
+    #     Example:
+    #         To use the runnable:
+    #             - Define the context and question.
+    #             - Execute the runnable with these parameters to get the model's response.
+    #     """
 
-        template = """You are a helpful AI bot that answers questions for a user. Keep your response short and direct" \n
-        \n ------- \n 
-        {context} 
-        \n ------- \n
-        Here is the user question: \n --- --- --- \n {question} \n Don't give information outside the document or repeat your findings."""
+    #     template = """You are a helpful AI bot that answers questions for a user. Keep your response short and direct" \n
+    #     \n ------- \n 
+    #     {context} 
+    #     \n ------- \n
+    #     Here is the user question: \n --- --- --- \n {question} \n Don't give information outside the document or repeat your findings."""
         
-        prompt = PromptTemplate(
-            template=template,
-            input_variables=["context", "question"],
-        )
-        # Create a LangChain runnable
-        model = ChatOpenAI(temperature=0, model=self.model_name)
-        chain = ( {"context": lambda x: context,
-                  "question": itemgetter("question")} 
-                | prompt 
-                | model 
-                )
+    #     prompt = PromptTemplate(
+    #         template=template,
+    #         input_variables=["context", "question"],
+    #     )
+    #     # Create a LangChain runnable
+    #     model = ChatOpenAI(temperature=0, model=self.model_name)
+    #     chain = ( {"context": lambda x: context,
+    #               "question": itemgetter("question")} 
+    #             | prompt 
+    #             | model 
+    #             )
         return chain
     
 
