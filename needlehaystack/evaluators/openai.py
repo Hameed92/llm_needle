@@ -62,16 +62,13 @@ class OpenAIEvaluator(Evaluator):
         try:
             verdict_response = requests.post(url=url, headers=headers, json=payload)
             verdict = verdict_response.json()['choices'][0]['message']['content']
-        except:
-            time.sleep(5)
-            print('gpt call failed', verdict_response.text)
-        
-        try:
             score = int(re.findall(r"\[\s*\+?(-?\d+)\s*\]", verdict)[0])
         except:
             score = -1
+            time.sleep(5)
+            print('gpt call failed')
+        
+            
         print('done evaluating')
         return score #int(eval_result['score'])
 
-
-{"model": "/tmp/allam_13b_v1_12_2_8", "context_length": 200, "depth_percent": 100.0, "version": 1, "needle": "\u062a\u0634\u062a\u0647\u0631 \u0645\u0646\u0637\u0642\u0629 \u0639\u0633\u064a\u0631 \u0628\u0623\u062c\u0648\u0627\u0626\u0647\u0627 \u0627\u0644\u0645\u0639\u062a\u062f\u0644\u0629 \u0637\u0648\u0627\u0644 \u0627\u0644\u0633\u0646\u0629.", "model_response": "\u062a\u0634\u062a\u0647\u0631 \u0645\u0646\u0637\u0642\u0629 \u0639\u0633\u064a\u0631 \u0628\u0623\u062c\u0648\u0627\u0626\u0647\u0627 \u0627\u0644\u0645\u0639\u062a\u062f\u0644\u0629 \u0637\u0648\u0627\u0644 \u0627\u0644\u0633\u0646\u0629. </s>", "score": 10, "test_duration_seconds": 0.6517190933227539, "test_timestamp_utc": "2024-07-22 13:10:01+0000", "file_name": "/allam_13b_v1_12_2_8_len_200_depth_10000"}
