@@ -64,12 +64,14 @@ class OpenAIEvaluator(Evaluator):
             try:
                 verdict_response = requests.post(url=url, headers=headers, json=payload)
                 verdict = verdict_response.json()['choices'][0]['message']['content']
+                print(verdict)
                 score = int(re.findall(r"\[\s*\+?(-?\d+)\s*\]", verdict)[0])
                 i = 0
             except:
                 i -= 1
                 score = -1
-                time.sleep(5)
+                time.sleep(10)
+                print(verdict_response.text)
                 print(f'gpt call failed {i}')
         
             
