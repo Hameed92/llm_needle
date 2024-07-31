@@ -7,6 +7,7 @@ from llm_needle_haystack_tester import LLMNeedleHaystackTester
 from llm_multi_needle_haystack_tester import LLMMultiNeedleHaystackTester
 from evaluators import Evaluator, LangSmithEvaluator, OpenAIEvaluator
 from providers import Anthropic, ModelProvider, OpenAI, Cohere, HF 
+import os
 
 load_dotenv()
 
@@ -103,7 +104,8 @@ def main():
     args = CLI(CommandArgs, as_positional=False)
     args.model_to_test = get_model_to_test(args)
     args.evaluator = get_evaluator(args)
-    
+    if (not os.getenv('OPENAI_KEY')):
+        raise ValueError("OPENAI_KEY/URL must be in env.")
     if args.multi_needle == True:
         print("Testing multi-needle")
         tester = LLMMultiNeedleHaystackTester(**args.__dict__)
