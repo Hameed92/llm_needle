@@ -52,8 +52,10 @@ class OpenAIEvaluator(Evaluator):
         # print('true answer: ', self.true_answer)
         # print('qustion: ', self.question_asked)
         print('evaluating')
+        print('true_answer: ', self.true_answer)
         judge_template = [{ 'role': 'system', 'content': self.SYSTEM_MESSAGE},
                           {'role': 'user', 'content': "[Instruction]\nPlease act as an impartial judge and evaluate the quality of the response provided by an AI assistant to the user question displayed below. {criteria}\n[Ground truth]\n{reference}\nBegin your evaluation by providing a short explanation. Be as objective as possible. After providing your explanation, you must rate the response on a scale of 1 to 10 by strictly following this format: '[[rating]]', for example: 'Rating: [[5]]'.\n\n[Question]\n{input}\n\n[The Start of Assistant\'s Answer]\n{prediction}\n[The End of Assistant\'s Answer]".format(criteria=self.CRITERIA, reference=self.true_answer, input=self.question_asked, prediction=response)}]
+        # print('gpt4 template: ----------------------', judge_template)
         payload = {"temperature": 0, "messages": judge_template}
         openai_key = os.environ.get("OPENAI_KEY", None)
         openai_url = os.environ.get("OPENAI_URL", None)
