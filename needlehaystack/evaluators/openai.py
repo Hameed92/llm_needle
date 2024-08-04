@@ -44,8 +44,8 @@ class OpenAIEvaluator(Evaluator):
         # print('qustion: ', self.question_asked)
         print('evaluating')
         print('true_answer: ', self.true_answer)
-        judge_template = [{ 'role': 'system', 'content': self.SYSTEM_MESSAGE},
-                          {'role': 'user', 'content': "[Instruction]\nPlease act as an impartial judge and evaluate the quality of the response provided by an AI assistant to the user question displayed below. {criteria}\n[Ground truth]\n{reference}\nBegin your evaluation by providing a short explanation. Be as objective as possible. After providing your explanation, you must rate the response on a scale of 1 to 10 by strictly following this format: '[[rating]]', for example: 'Rating: [[5]]'.\n\n[Question]\n{input}\n\n[The Start of Assistant\'s Answer]\n{prediction}\n[The End of Assistant\'s Answer]".format(criteria=self.CRITERIA, reference=self.true_answer, input=self.question_asked, prediction=response)}]
+        prompt = {'role': 'user', 'content': "[Instruction]\nPlease act as an impartial judge and evaluate the quality of the response provided by an AI assistant to the user question displayed below. {criteria}\n[Ground truth]\n{reference}\nBegin your evaluation by providing a short explanation. Be as objective as possible. After providing your explanation, you must rate the response on a scale of 1 to 10 by strictly following this format: '[[rating]]', for example: 'Rating: [[5]]'.\n\n[Question]\n{input}\n\n[The Start of Assistant\'s Answer]\n{prediction}\n[The End of Assistant\'s Answer]".format(criteria=self.CRITERIA, reference=self.true_answer, input=self.question_asked, prediction=response)}
+        judge_template = [{ 'role': 'system', 'content': self.SYSTEM_MESSAGE}, prompt]
         # print('gpt4 template: ----------------------', judge_template)
         payload = {"temperature": 0, "messages": judge_template}
         openai_key = os.environ.get("OPENAI_KEY", None)
@@ -63,7 +63,7 @@ class OpenAIEvaluator(Evaluator):
             anthropic_key = os.environ.get("ANTHROPIC_KEY", None)
             client = anthropic.Anthropic(api_key=anthropic_key)
             try:
-                verdict = client.messages.create(model="claude-3-5-sonnet-20240620", system=self.SYSTEM_MESSAGE, messages=[{'role': 'user', 'content': "[Instruction]\nPlease act as an impartial judge and evaluate the quality of the response provided by an AI assistant to the user question displayed below. {criteria}\n[Ground truth]\n{reference}\nBegin your evaluation by providing a short explanation. Be as objective as possible. After providing your explanation, you must rate the response on a scale of 1 to 10 by strictly following this format: '[[rating]]', for example: 'Rating: [[5]]'.\n\n[Question]\n{input}\n\n[The Start of Assistant\'s Answer]\n{prediction}\n[The End of Assistant\'s Answer]".format(criteria=self.CRITERIA, reference=self.true_answer, input=self.question_asked, prediction=response)}], max_tokens=500).content[0].model_dump()['text']
+                verdict = client.messages.create(model="claude-3-5-sonnet-20240620", system=self.SYSTEM_MESSAGE, messages=[prompt], max_tokens=500).content[0].model_dump()['text']
             except:
                 print('claude failed too')
                 score = -1
