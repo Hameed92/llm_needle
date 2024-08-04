@@ -64,6 +64,7 @@ class OpenAIEvaluator(Evaluator):
             client = anthropic.Anthropic(api_key=anthropic_key)
             try:
                 verdict = client.messages.create(model="claude-3-5-sonnet-20240620", system=self.SYSTEM_MESSAGE, messages=[prompt], max_tokens=500).content[0].model_dump()['text']
+                score = int(re.findall(r"\[\s*\+?(-?\d+)\s*\]", verdict))
             except:
                 print('claude failed too')
                 score = -1
